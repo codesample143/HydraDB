@@ -1,8 +1,10 @@
 #include <string>
+#include <iostream>
+#include <memory>
 
 class InputBuffer{
     public:
-        InputBuffer* new_input_buffer();
+        InputBuffer();
         void print_db();
         void read_input(InputBuffer* input_buffer);
     private:
@@ -10,3 +12,4 @@ class InputBuffer{
         size_t buffer_length;
         std::ptrdiff_t input_length;
 };
+
