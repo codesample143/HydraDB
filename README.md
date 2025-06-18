@@ -5,6 +5,7 @@ HydraDB is a miniature relational database fully written in C++. Primary focus w
 
 ## Features
 
-- **2. Write Ahead Logging (WAL) for Durability:** Ensures database integrity and durability through atomic and defensive operations. 
 
 ## Incoming Features
+
+- **2. Write Ahead Logging (WAL) for Durability:** Ensures database integrity and durability through atomic and defensive operations. 
