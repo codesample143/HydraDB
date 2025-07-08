@@ -20,7 +20,9 @@ int main(int argc, char* argv[]){
             
         }
 
-        if(input_buffer->get_buffer().find("insert") != std::string::npos){ //has issues with being able to query, also idk comparison functions in c++, insertion will happen by only. use .find to get a valid index and ensure its not nothing, then write. 
+        if(input_buffer->get_buffer().find("insert") != std::string::npos){ //has issues with being able to query, also idk comparison functions in c++, insertion will happen by only. use .find to get a valid index and ensure its not nothing, then write.
+            //need a better parser/tokenizer and such obviously, but the flushing logic will be successful upon every startup. Before every startup I should ensure that every <Begin> has an <End> 
+            //obviously instead of this dogshit find I should use a parser as well, tokenize it to ensure a valid statement and log it if it is valid. 
             //insert ** into ** 
             //dataFile.write(input_buffer->get_buffer().c_str(), input_buffer->get_buffer().size()); //instead of writing, store in a buffer and only write at the end?
             dataFile << input_buffer->get_buffer() << "\n";

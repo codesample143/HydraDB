@@ -1,3 +1,6 @@
+#ifndef INPUTBUFFER_HPP
+#define INPUTBUFFER_HPP
+
 #include <string>
 #include <iostream>
 #include <memory>
@@ -15,3 +18,4 @@ class InputBuffer{
         std::ptrdiff_t input_length;
 };
 
+#endif
