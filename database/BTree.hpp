@@ -2,9 +2,36 @@
 
 #include <vector>
 #include <cstdint>
-#define PAGE_SIZE = 4096
+#define PAGE_SIZE 4096
 
 
+class Page{
+private:
+    bool is_leaf;
+    std::size_t num_keys;
+    uint32_t parent_id;
+    uint32_t next_leaf_id; //for leaf nodes, takes the place of a pointer
+    std::vector<std::string> K;
+    std::vector<std::vector<std::string>> V;
+    std::vector<uint32_t> children;
+public:
+    uint32_t page_id;
+    Page(bool leaf, std::size_t _capacity, uint32_t _id){
+        is_leaf = leaf;
+        num_keys = 0;
+        parent_id = 0;
+        page_id = _id;
+
+        K.reserve(_capacity);
+        if(is_leaf){
+            V.reserve(_capacity);
+        } else {
+            children.reserve(_capacity + 1);
+        }
+
+    };
+
+};
 template <typename T>
 struct Node{
     bool is_leaf;             // true if the node is a leaf (no children), false if it's an internal node
@@ -13,13 +40,26 @@ struct Node{
     T* item;                  // array of keys (data stored in this node)
     Node<T>** children;       // array of pointers to child nodes
     Node<T>* parent;          // pointer to the parent node (nullptr if root)
+    //might remove this, i want disk not in-memory
 public:
     Node(std::size_t _degree){
         this->is_leaf = false;
-        this->degree = degree;
+        this->degree = _degree;
         this->size = 0;
 
         T* _item = new T[degree - 1];
+        for(int i=0; i<degree-1; i++){
+            _item[i] = 0;
+        }
+        this->item = _item;
+
+        Node<T>** _children = new Node<T>*[degree];
+        for(int i=0; i<degree; i++){
+            _children[i] = nullptr;
+        }
+
+        this->children = _children;
+        this->parent = nullptr;
 
     }
 };
@@ -32,6 +72,10 @@ public:
     BPlusTree(std::size_t _degree){
         (*this).root = nullptr;
         (*this).degree = _degree;
+    }
+
+    ~BPlusTree(){
+        std::cout << "B+ tree was destroyed (not really until you define clear)";
     }
 
     Node<T>* BPlusTreeSearch(Node<T>* node, T key){

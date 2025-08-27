@@ -1,4 +1,0 @@
-<Begin>
-insert 3 into table
-insert 3 into table
-<End>
