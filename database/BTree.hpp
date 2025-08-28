@@ -5,31 +5,51 @@
 #define PAGE_SIZE 4096
 
 
-class Page{
-private:
+struct PageHeader {
     bool is_leaf;
     std::size_t num_keys;
-    uint32_t parent_id;
-    uint32_t next_leaf_id; //for leaf nodes, takes the place of a pointer
+    uint32_t parent_page_id;  // or nullptr if root
+    uint32_t next_page_id;    // only used for leaf nodes
+};
+
+class Page{
+private:
+    PageHeader header;
     std::vector<std::string> K;
     std::vector<std::vector<std::string>> V;
     std::vector<uint32_t> children;
 public:
     uint32_t page_id;
     Page(bool leaf, std::size_t _capacity, uint32_t _id){
-        is_leaf = leaf;
-        num_keys = 0;
-        parent_id = 0;
+        header.is_leaf = leaf;
+        header.num_keys = 0;
+        header.parent_page_id = 0;
         page_id = _id;
 
         K.reserve(_capacity);
-        if(is_leaf){
+        if(header.is_leaf){
             V.reserve(_capacity);
         } else {
             children.reserve(_capacity + 1);
         }
 
     };
+
+    bool isLeaf(){
+        return header.is_leaf;
+    }
+
+    void insertKV(const std::string& key, const std::vector<std::string>& value){
+
+    }
+
+    void storeChildPointer(){
+
+    }
+
+    Page split(uint32_t new_page_id, std::size_t capacity){
+        
+    }
 
 };
 template <typename T>
