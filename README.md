@@ -1,5 +1,6 @@
 ## Overview
 HydraDB is a miniature relational database fully written in C++. Primary focus was on implementing efficient reads and writes, concurrent transaction handling, and durability. 
+<img width="3024" height="1490" alt="image" src="https://github.com/user-attachments/assets/024b82ac-b087-43d1-946a-c6683b146cec" />
 
 ## Table of Contents
 - **1. B+ Tree Storage:** Ensures fast data retrieval for optimal database performance involving large datasets.

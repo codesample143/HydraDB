@@ -64,7 +64,7 @@ public:
         header.num_keys++;
 
         if(header.num_keys > capacity){
-            split(getNextPageID(), capacity); //gets the next pageID(simply increments at the moment)
+            split(getNextPageID(), capacity); //gets the next pageID(simply increments at the moment, but you need to probably define page?)
             return;
         }
     }
@@ -84,9 +84,18 @@ public:
         Page new_page(true, capacity, new_page_id);
         int mid = header.num_keys / 2;
 
-        new_page.KV.assign(KV.begin() + mid, KV.end());
+        new_page.KV.assign(KV.begin() + mid, KV.end()); //paritioning the page
         KV.erase(KV.begin() + mid, KV.end());
 
+        //main issue is that you have to reassign the pointers but you don't currently have pointers to the original page after you split?
+        if(new_page.isLeaf()){
+            //input data, write to page and store in leaf?
+            
+        } else if(children.size() == 0){ //checks if it's root, but this should be the old page not the new_page
+            children.emplace_back(new_page_id); //give the pointer as pageid? 
+        } else { //this is a non root node and non leaf node, meaning that this page will hold pointers to leaf nodes which have data
+
+        }
         //this is NOT DONE DO NOT PUSH THIS TO PROD OK U DUMBASS
 
         return new_page;
