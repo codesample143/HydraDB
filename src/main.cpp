@@ -1,9 +1,19 @@
 #include <iostream>
 #include <fstream>
+
 #include "SQLParser.h"
+#include "sql/statements.h"
+#include "util/sqlhelper.h"
+
 #include "database/InputBuffer.hpp"
+#include "database/BTree.hpp"
 
 int main(int argc, char* argv[]){
+    std::fstream db("mydatabase.db", std::ios::in | std::ios::out | std::ios::binary);
+    if (!db){
+        db.open("mydatabase.db", std::ios::out | std::ios::binary);
+    }
+
     std::unique_ptr<InputBuffer> input_buffer = std::make_unique<InputBuffer>();
     std::fstream logFile;
     logFile.open("log.txt", std::ios::in | std::ios::out | std::ios::app);
@@ -21,8 +31,19 @@ int main(int argc, char* argv[]){
 
         if(result.isValid() && result.size() > 0){
             const hsql::SQLStatement* statement = result.getStatement(0);
-            if(statement->isType(hsql::kStmtSelect)){
-                const auto* select = static_cast<const hsql::SelectStatement*>(statement);
+            if(statement->isType(hsql::kStmtCreate)){
+                const auto* create = static_cast<const hsql::CreateStatement*>(statement);
+                //getting information about tables
+                std::string table_name = create->tableName;
+                
+            } else if(1){ //replace with more SQL logic 
+
+            } else {
+                fprintf(stderr, "Given string is not a valid SQL query or not supported at this time.\n");
+                fprintf(stderr, "%s (L%d:%d)\n",
+                        result.errorMsg(),
+                        result.errorLine(),
+                        result.errorColumn());
             }
 
         }

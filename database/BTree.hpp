@@ -1,4 +1,3 @@
-//from https://github.com/solangii/b-plus-tree
 
 #include <vector>
 #include <cstdint>
@@ -15,43 +14,89 @@ struct PageHeader {
 class Page{
 private:
     PageHeader header;
-    std::vector<std::string> K;
-    std::vector<std::vector<std::string>> V;
+    std::vector<std::string> K;   // separator keys
+    std::vector<std::pair<std::string, std::vector<std::string>>> KV;
     std::vector<uint32_t> children;
+    std::size_t capacity;
 public:
-    uint32_t page_id;
-    Page(bool leaf, std::size_t _capacity, uint32_t _id){
+    Page(bool leaf, std::size_t _capacity, uint32_t page_id){
         header.is_leaf = leaf;
         header.num_keys = 0;
         header.parent_page_id = 0;
-        page_id = _id;
+        page_id = getNextPageID();
+        capacity = _capacity;
 
-        K.reserve(_capacity);
-        if(header.is_leaf){
-            V.reserve(_capacity);
+        if(header.is_leaf) {
+            KV.reserve(_capacity);       // leaf stores key-value pairs
         } else {
-            children.reserve(_capacity + 1);
+            K.reserve(_capacity);        // internal keys
+            children.reserve(_capacity + 1); // child pointers
         }
 
     };
+
+    uint32_t getNextPageID(){
+
+    }
 
     bool isLeaf(){
         return header.is_leaf;
     }
 
     void insertKV(const std::string& key, const std::vector<std::string>& value){
+        //add logic for split if inserting a KV would exceed capacity
+        int index = 0;
+        /**
+         * As long as the index remains less than the number of keys and the value of the key remains in sorted order to minimize splitting,
+         * we can increment "index". Perhaps a better word for this could be position. 
+         */
+        while(index < header.num_keys && KV[index].first < key){ //should consider what this is doing in terms of indexing, we wait for sorted ordr
+            index++; 
+        }
 
+        // 2. Key exists → append to vector
+        if(index < header.num_keys && KV[index].first == key){
+            KV[index].second.insert(KV[index].second.end(), value.begin(), value.end());
+            return;
+        }
+
+        KV.insert(KV.begin() + index, std::make_pair(key, value));
+        header.num_keys++;
+
+        if(header.num_keys > capacity){
+            split(getNextPageID(), capacity); //gets the next pageID(simply increments at the moment)
+            return;
+        }
     }
 
     void storeChildPointer(){
 
     }
-
+    /**
+     *  Leaf split → promotes first key of the right half.
+        Internal split → promotes the middle key.
+        Root split → creates a new root and grows the tree.
+    */
     Page split(uint32_t new_page_id, std::size_t capacity){
-        
+        /**
+         * Create a new Page, give it the new_page_id. You also need to check if it's a leaf page, internal page, or root. 
+         */
+        Page new_page(true, capacity, new_page_id);
+        int mid = header.num_keys / 2;
+
+        new_page.KV.assign(KV.begin() + mid, KV.end());
+        KV.erase(KV.begin() + mid, KV.end());
+
+        //this is NOT DONE DO NOT PUSH THIS TO PROD OK U DUMBASS
+
+        return new_page;
+
     }
 
 };
+
+//from https://github.com/solangii/b-plus-tree
+//will not become necessary until I create in-memory functionality
 template <typename T>
 struct Node{
     bool is_leaf;             // true if the node is a leaf (no children), false if it's an internal node
