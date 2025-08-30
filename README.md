@@ -1,5 +1,5 @@
 ## Overview
-HydraDB is a miniature relational database fully written in C++. Primary focus was on implementing efficient reads and writes, concurrent transaction handling, and durability. 
+HydraDB is a miniature relational database fully written in C++. Primary focus is on implementing efficient reads and writes, storage handling, efficient query processing and optimization, and eventual integration with more modern database structures (VectorDB, GraphDB, TimeSeriesDB). Currently, the MVP can handle simple SQL and alter the B+ tree data structure accordingly. 
 
 ## Diagram
 <img width="3024" height="1490" alt="image" src="https://github.com/user-attachments/assets/024b82ac-b087-43d1-946a-c6683b146cec" />
