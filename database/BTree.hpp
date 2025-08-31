@@ -18,12 +18,13 @@ private:
     std::vector<std::pair<std::string, std::vector<std::string>>> KV;
     std::vector<uint32_t> children;
     std::size_t capacity;
+    uint32_t page_id;  
 public:
-    Page(bool leaf, std::size_t _capacity, uint32_t page_id){
+    Page(bool leaf, std::size_t _capacity, uint32_t id){
         header.is_leaf = leaf;
         header.num_keys = 0;
         header.parent_page_id = 0;
-        page_id = getNextPageID();
+        page_id = id;
         capacity = _capacity;
 
         if(header.is_leaf) {
@@ -87,20 +88,57 @@ public:
         new_page.KV.assign(KV.begin() + mid, KV.end()); //paritioning the page
         KV.erase(KV.begin() + mid, KV.end());
 
+        header.num_keys = KV.size();
+        new_page.header.num_keys = new_page.KV.size();
+
+
+        new_page.header.next_page_id = header.next_page_id;
+        header.next_page_id = new_page.page_id;            // current page points to new page
         //main issue is that you have to reassign the pointers but you don't currently have pointers to the original page after you split?
+        /*
         if(new_page.isLeaf()){
             //input data, write to page and store in leaf?
-            
+
         } else if(children.size() == 0){ //checks if it's root, but this should be the old page not the new_page
             children.emplace_back(new_page_id); //give the pointer as pageid? 
         } else { //this is a non root node and non leaf node, meaning that this page will hold pointers to leaf nodes which have data
 
         }
         //this is NOT DONE DO NOT PUSH THIS TO PROD OK U DUMBASS
+        */
 
         return new_page;
 
     }
+
+    void WritePageToDisk(){
+        std::ofstream out("pages.dat", std::ios::binary | std::ios::in | std::ios::out);
+        if(!out.is_open()) {
+            out.open("pages.dat", std::ios::binary | std::ios::trunc); // create if missing
+        }
+
+    }
+
+    Page LoadFromDisk(uint32_t page_id, const std::string& filename, std::size_t capacity){
+        std::ifstream in(filename, std::ios::binary);
+        if (!in.is_open()) {
+            throw std::runtime_error("Cannot open database file");
+        }
+
+        in.seekg((page_id - 1) * PAGE_SIZE);
+        PageHeader header;
+        in.read(reinterpret_cast<char*>(&header), sizeof(PageHeader));
+
+        Page page(header.is_leaf, capacity, page_id);
+        page.header = header;
+        if(header.is_leaf){
+            
+        } else {
+
+        }
+
+    }
+
 
 };
 
