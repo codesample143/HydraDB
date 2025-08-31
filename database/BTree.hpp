@@ -3,6 +3,8 @@
 #include <cstdint>
 #define PAGE_SIZE 4096
 
+//this code is out of control, probably eventually get a page manager too
+
 
 struct PageHeader {
     bool is_leaf;
@@ -37,7 +39,7 @@ public:
     };
 
     uint32_t getNextPageID(){
-
+        
     }
 
     bool isLeaf(){

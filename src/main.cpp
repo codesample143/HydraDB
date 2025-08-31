@@ -1,10 +1,10 @@
 #include <iostream>
 #include <fstream>
+#include <memory>
 
 #include "SQLParser.h"
 #include "sql/statements.h"
 #include "util/sqlhelper.h"
-
 #include "database/InputBuffer.hpp"
 #include "database/BTree.hpp"
 
@@ -13,7 +13,7 @@ int main(int argc, char* argv[]){
     if (!db){
         db.open("mydatabase.db", std::ios::out | std::ios::binary);
     }
-
+    //may need to clean up this logic eventually
     std::unique_ptr<InputBuffer> input_buffer = std::make_unique<InputBuffer>();
     std::fstream logFile;
     logFile.open("log.txt", std::ios::in | std::ios::out | std::ios::app);
@@ -39,29 +39,34 @@ int main(int argc, char* argv[]){
         }
         const hsql::SQLStatement* statement = result.getStatement(0);
         
-        if(result.isValid() && result.size() > 0){
-            // --- CREATE TABLE ---
-            if(statement->isType(hsql::kStmtCreate)){
-                const auto* create = static_cast<const hsql::CreateStatement*>(statement);
-                //
-                uint32_t root_page_id = 1;
-                size_t page_capacity = 4;
-                metadata_file.seekp(0, std::ios::end);
-                //getting information about tables
-                std::string table_name = create->tableName;
-                std::vector<std::string> results;
-                // everything between // should be placed into a seperate function later
+        // --- CREATE TABLE ---
+        if(statement->isType(hsql::kStmtCreate)){
+            const auto* createStatement = static_cast<const hsql::CreateStatement*>(statement);
+            //
+            std::string table_name = createStatement->tableName;
 
-            } else if(statement->isType(hsql::kStmtInsert)){ //replace with more SQL logic 
-                const auto* insertStmt = static_cast<const hsql::InsertStatement*>(statement);
-            } else {
-                fprintf(stderr, "Given string is not a valid SQL query or not supported at this time.\n");
-                fprintf(stderr, "%s (L%d:%d)\n",
-                        result.errorMsg(),
-                        result.errorLine(),
-                        result.errorColumn());
-            }
+            uint32_t root_page_id = 1;
+            size_t page_capacity = 4;
+            metadata_file.seekp(0, std::ios::end);
+            uint32_t id = root_page_id;
+            size_t len = table_name.size();
+            metadata_file.write(reinterpret_cast<char*>(&id), sizeof(id)); //4 bytes
+            metadata_file.write(reinterpret_cast<char*>(&len), sizeof(len)); //32 bytes
+            metadata_file.write(table_name.c_str(), len); //len bytes
+            //getting information about tables
+            // everything between // should be placed into a seperate function later
 
+        } else if(statement->isType(hsql::kStmtSelect)){ //replace with more SQL logic 
+            const auto* selectStatement = static_cast<const hsql::SelectStatement*>(statement);
+            //
+            
+            //everything between // should be placed into a seperate function later
+        } else {
+            fprintf(stderr, "Given string is not a valid SQL query or not supported at this time.\n");
+            fprintf(stderr, "%s (L%d:%d)\n",
+                    result.errorMsg(),
+                    result.errorLine(),
+                    result.errorColumn());
         }
 
     }
