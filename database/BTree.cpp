@@ -17,7 +17,7 @@ Page::Page(bool leaf, std::size_t _capacity, uint32_t id){
 }
 
 uint32_t Page::getNextPageID() {
-
+    
 }
 
 bool Page::isLeaf() const {

@@ -29,7 +29,6 @@ private:
 
 public:
     Page(bool leaf, std::size_t _capacity, uint32_t id);
-
     uint32_t getPageID();
     uint32_t getNextPageID();
     bool isLeaf() const;
@@ -38,5 +37,4 @@ public:
     Page split(uint32_t new_page_id, std::size_t capacity);
     void WritePageToDisk(const std::string& filename);
     static Page LoadFromDisk(uint32_t page_id, const std::string& filename, std::size_t capacity);
-
 };

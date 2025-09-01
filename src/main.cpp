@@ -9,7 +9,7 @@
 #include "database/BTree.hpp"
 
 int main(int argc, char* argv[]){
-    std::fstream db("mydatabase.db", std::ios::in | std::ios::out | std::ios::binary);
+    std::fstream db("mydatabase.db", std::ios::in | std::ios::out | std::ios::binary); //more of an experiment than anything
     if (!db){
         db.open("mydatabase.db", std::ios::out | std::ios::binary);
     }
@@ -20,13 +20,11 @@ int main(int argc, char* argv[]){
     hsql::SQLParserResult result;
 
     logFile << "<Begin>" << "\n";
-
+    //add logic for reversing the logfile in case there was some kind of exception
 
     std::fstream metadata_file("metadata.dat", std::ios::in | std::ios::out | std::ios::binary);
     if(!metadata_file.is_open()) {
-        metadata_file.open("metadata.dat", std::ios::out | std::ios::binary);
-        metadata_file.close();
-        metadata_file.open("metadata.dat", std::ios::in | std::ios::out | std::ios::binary);
+
     }
 
     while(true){

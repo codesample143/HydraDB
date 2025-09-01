@@ -8,8 +8,6 @@ HydraDB is a miniature relational database fully written in C++. Primary focus i
 - **1. B+ Tree Storage:** Ensures fast data retrieval for optimal database performance involving large datasets.
 - **2. Write Ahead Logging (WAL) for Durability:** Ensures database integrity and durability through atomic and defensive operations. 
 - **3. Page:** -> Use of pages as data structures to represent the nodes of the B+ tree in order to represent disk file structure instead of in-memory storage. 
-## Features
-
 
 ## Incoming Features
 - **3. Concurrent Reads/Writes with Locking:** Lock manager will handle database status, will likely involve some mutex through a lock manager to simplify this project. 
