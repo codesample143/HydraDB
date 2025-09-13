@@ -6,7 +6,6 @@
 #include "sql/statements.h"
 #include "util/sqlhelper.h"
 #include "database/InputBuffer.hpp"
-#include "database/BTree.hpp"
 
 int main(int argc, char* argv[]){
     std::fstream db("mydatabase.db", std::ios::in | std::ios::out | std::ios::binary); //more of an experiment than anything

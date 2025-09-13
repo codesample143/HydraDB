@@ -22,7 +22,6 @@ file(GLOB PARSER_SRC
 
 set(SRC_FILES
     src/main.cpp
-    database/Btree.cpp
     database/InputBuffer.cpp
     lib/sql-parser-main/src/SQLParser.cpp
     lib/sql-parser-main/src/SQLParserResult.cpp
@@ -30,8 +29,4 @@ set(SRC_FILES
     ${PARSER_SRC}
 )
 
-# Create executable
 add_executable(HydraDB ${SRC_FILES})
-
-# Link dependencies
-find_package(Boost REQUIRED)
