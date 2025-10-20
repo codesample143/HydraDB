@@ -79,7 +79,53 @@ namespace hydradb{
             // Return estimated number of entries from `start_ikey` to `end_ikey`.
             uint64_t ApproximateNumEntries(const Slice& start_ikey, const Slice& end_ikey) const;
 
+            class Iterator{
+                public:
+                    explicit Iterator(const SkipList* list);
 
+                    // Change the underlying skiplist used for this iterator
+                    // This enables us not changing the iterator without deallocating
+                    // an old one and then allocating a new one
+                    void SetList(const SkipList* list);
+
+                    // Returns true if and only the iterator is positioned at a valid node, else false.
+                    bool Valid() const;
+
+                    // Returns the key at the current position.
+                    // REQUIRES: Valid()
+                    const Key& key() const;
+
+                    // Advances to the next position.
+                    // REQUIRES: Valid()
+                    void Next();
+
+                    // Advances to the previous position.
+                    // REQUIRES: Valid()
+                    void Prev();
+
+                    // Advance to the first entry with a key >= target
+                    void Seek(const Key& target);
+
+                    // Retreat to the last entry with a key <= target
+                    void SeekForPrev(const Key& target);
+
+                    // Position at the first entry in list.
+                    // Final state of iterator is Valid() iff list is not empty.
+                    void SeekToFirst();
+
+                    // Position at the last entry in list.
+                    // Final state of iterator is Valid() iff list is not empty.
+                    void SeekToLast();
+
+                private:
+                    const SkipList* list_;
+                    Node* node_;
+                    // Intentionally copyable
+                };   
+                    // Immutable after construction
+                    Comparator const compare_;
+                    Allocator* const allocator_;  // Allocator used for allocations of nodes
+                    
     };
 }
 #endif
